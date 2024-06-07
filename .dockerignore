@@ -1,0 +1,15 @@
+# .dockerignore file
+
+# Ignore sensitive data or secrets
+.env
+
+# Ignore IDE and editor specific files
+.idea/
+.vscode/
+
+# Ignore OS-specific files and directories
+.DS_Store
+Thumbs.db
+
+# Ignore Git
+.git/

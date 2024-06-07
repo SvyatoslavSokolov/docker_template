@@ -1,0 +1,28 @@
+# Define services for deploying and running rknn service.
+version: "3.9"
+services:
+  example:
+    image: example:tag              # Docker image for service
+    container_name: example         # Container name
+    privileged: true                # Extended privileges for this container
+    build:                          # Build an image from a Dockerfile
+      context: .                    # Path of the Dockerfile (current directory)
+      shm_size: "12gb"               # More memory usage for build container
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia         # Request GPU device with NVIDIA driver
+              capabilities: [gpu]     # Specific GPU capability request
+    environment:
+      DISPLAY: $DISPLAY             # Use host's display value for DISPLAY environment variable
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility  # Expose more GPU capabilities
+    volumes:                        # File system mounts for containers
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro  # Read-only host's X11 socket mount in container
+      - ~/.Xauthority:/root/.Xauthority:ro  # Read-only user's .Xauthority file mount in container
+      - .:/workspaces:cached        # mount code folder
+    restart: "no"                   # No auto-restart on failure for more availability
+    stdin_open: true                # Keep STDIN open even if not attached
+    tty: true                       # Allocate a pseudo-TTY
+    ports:
+      - 8888:8888                   # Map host port 8888 to container port for external access
